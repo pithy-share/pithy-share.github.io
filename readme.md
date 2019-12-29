@@ -2,7 +2,7 @@
 English
 
 # introduction 
-​cauto is like python's pyautogui，cauto developed in c，now support：
+cauto is like python's pyautogui，cauto developed in c，now support：
 * simulate keyboard click
 * simulate mouse click
 * mouse move
@@ -50,31 +50,31 @@ api is in app_api.h
 
 ## key
 * key press
-```
+```c
 	key_down(KEY_A);
 ```
 * key up
-```
+```c
 	key_up(KEY_A);
 ```
 * click 
-```
+```c
 	key_click(KEY_A);//key  A
-	key_shift(KEY_B);//key  ctrl + B
+	key_shift(KEY_B);//key  shift + B
 	key_alt(KEY_A);//key alt + A
 	key_ctl(KEY_A);//key ctrl + A
 ```
 
 * double click 
-```
+```c
 	double_click(KEY_A);
 ```
 * multi click
-```
+```c
 	key_clicks_mul(KEY_A, 5, 0);//click key A 5 times 2，interval 0 ms
 ```
 * multi keys
-```
+```c
 	key_num_t ctrl_k[] = {KEY_CTRL, KEY_A};
 	mul_keys_click(ctrl_k, sizeof(ctrl_k)/sizeof(key_num_t), 0);//interval 0 ms
 	/*Equivalent to*/
@@ -89,24 +89,24 @@ api is in app_api.h
 	* KEY_MOUSE_M（Middle key ） 
 	* KEY_MOUSE_R（right  key ）
 
-```
+```c
 	key_click(KEY_MOUSE_L);// click mouse's left key
 ```
 * motion 
 >Coordinate System：top left corner is（0,0）， to right ，x coordinate  add， to down，y coordinate add
-```
+```c
 	pos_t cur;
 	mouse_move(100, 100);// move mouse to （x=100,y=100）
 	mouse_get(&cur);// get mouse's position 
 ```
 * wheel 
-```
+```c
 	mouse_wheel(100); // up 100
 	mouse_wheel(-100);// down 100
 ```
 # image 
 * find image 
-```
+```c
 	u32 cnts;
 	int i;
 
@@ -123,6 +123,6 @@ api is in app_api.h
 	}
 ```
 * find and click image 
-```
+```c
 	click_img("=.bmp", 0.99, NULL);
 ```

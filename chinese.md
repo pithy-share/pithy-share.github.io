@@ -1,8 +1,8 @@
-[english](readme.md)
+[English](readme.md)
 中文
 
 # 简介
-​cauto类似于python的pyautogui，但cauto使用c语言开发，目前支持以下操作：
+cauto类似于python的pyautogui，但cauto使用c语言开发，目前支持以下操作：
 * 模拟键盘按键点击
 * 模拟鼠标按键点击
 * 模拟鼠标的移动
@@ -50,31 +50,31 @@ api 在app_api.h文件中
 
 ## 按键
 * 按下按键
-```
+```c
 	key_down(KEY_A);
 ```
 * 松开按键
-```
+```c
 	key_up(KEY_A);
 ```
 * 单击
-```
+```c
 	key_click(KEY_A);//模拟按键 A
-	key_shift(KEY_B);//模拟按键 ctrl + B
+	key_shift(KEY_B);//模拟按键 shift + B
 	key_alt(KEY_A);//模拟按键 alt + A
 	key_ctl(KEY_A);//模拟按键 ctrl + A
 ```
 
 * 双击
-```
+```c
 	double_click(KEY_A);
 ```
 * 多击
-```
+```c
 	key_clicks_mul(KEY_A, 5, 0);//模拟按键A 5次，间隔0毫秒
 ```
 * 多个按键
-```
+```c
 	key_num_t ctrl_k[] = {KEY_CTRL, KEY_A};
 	mul_keys_click(ctrl_k, sizeof(ctrl_k)/sizeof(key_num_t), 0);//间隔0毫秒
 	/*等效于*/
@@ -89,24 +89,24 @@ api 在app_api.h文件中
 	* KEY_MOUSE_M（中间按键） 
 	* KEY_MOUSE_R（右键）
 
-```
+```c
 	key_click(KEY_MOUSE_L);// 单击鼠标左键
 ```
 * 移动
 >坐标系说明：左上角坐标为（0,0）， 向右，x坐标增加， 向下，y坐标增加
-```
+```c
 	pos_t cur;
 	mouse_move(100, 100);// 鼠标移动到（x=100,y=100）
 	mouse_get(&cur);// 获取当前鼠标坐标
 ```
 * 滚轮
-```
+```c
 	mouse_wheel(100); // up 100
 	mouse_wheel(-100);// down 100
 ```
 # 图像
 * 找图像
-```
+```c
 	u32 cnts;
 	int i;
 
@@ -123,6 +123,6 @@ api 在app_api.h文件中
 	}
 ```
 * 查找，并点击图像
-```
+```c
 	click_img("=.bmp", 0.99, NULL);
 ```
