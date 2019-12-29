@@ -125,4 +125,5 @@ api 在app_api.h文件中
 	click_img("=.bmp", 0.99, NULL);
 ```
 
-[猫](./hello.md)
+[中文](./hello.md)
+english
