@@ -79,6 +79,9 @@
     <li class="toctree-l3"><a href="#add-ssh-key">Add ssh key</a></li>
     
 
+    <li class="toctree-l3"><a href="#other">Other</a></li>
+    
+
     </ul>
                 </li>
     </ul>
@@ -258,44 +261,49 @@ $ git branch
 </code></pre>
 
 <ul>
-<li>
-<p>add pubkey to github</p>
-</li>
-<li>
-<ul>
-<li>1.copy pulic key to clipboard </li>
+<li>add pubkey to github</li>
 </ul>
-</li>
-</ul>
+<p>1.copy pulic key to clipboard</p>
 <pre><code class="bash">clip &lt; ~/.ssh/id_rsa.pub
 </code></pre>
 
-<ul>
-<li>
-<ul>
-<li>2.click setting</li>
-</ul>
-</li>
-</ul>
+<p>2.click setting</p>
 <p><img alt="setting.img" src="../../img/github_setting.jpg" /></p>
+<p>3.click <code>New SSH key</code> 
+<img alt="ssh.img" src="../../img/github_ssh.jpg" /></p>
+<p>4.copy string from clipboard and add
+<img alt="sshstring.img" src="../../img/github_ssh_copy.jpg" /></p>
 <ul>
-<li>
-<ul>
-<li>3.click <code>New SSH key</code> 
-<img alt="ssh.img" src="../../img/github_ssh.jpg" /></li>
-</ul>
-</li>
-<li>
-<ul>
-<li>4.copy string from clipboard and add
-<img alt="sshstring.img" src="../../img/github_ssh_copy.jpg" /></li>
-</ul>
-</li>
-<li>
-<p>clone Repositories with ssh</p>
-</li>
+<li>clone Repositories with ssh</li>
 </ul>
 <p><img alt="clonessh.img" src="../../img/github_clonessh.jpg" /></p>
+<h1 id="other">Other</h1>
+<ul>
+<li>view remote repository version </li>
+</ul>
+<pre><code class="bash">$ git remote -v
+origin  git@github.com:zyongzhangyong/mainpage.git (fetch)
+origin  git@github.com:zyongzhangyong/mainpage.git (push)
+</code></pre>
+
+<ul>
+<li>ignore file</li>
+</ul>
+<pre><code class="bash">touch .gitignore
+</code></pre>
+
+<p>add ignore files or dir in .gitignore</p>
+<pre><code class="bash">site/*
+*.log
+</code></pre>
+
+<ul>
+<li>view log or diff</li>
+</ul>
+<pre><code class="bash">gitk
+</code></pre>
+
+<p><img alt="gitk.img" src="../../img/gitk.jpg" /></p>
               
             </div>
           </div>
