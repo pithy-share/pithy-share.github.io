@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>git - zyong</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "git";
+    var mkdocs_page_input_path = "notes\\git.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> zyong</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Notes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../gcc/">gcc</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../python/">python</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">git</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#base">Base</a></li>
+    
+
+    <li class="toctree-l3"><a href="#branch">Branch</a></li>
+    
+
+    <li class="toctree-l3"><a href="#add-ssh-key">Add ssh key</a></li>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">MyProj</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../myproj/bmp/">bmp</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../myproj/cauto/">cauto</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">zyong</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Notes &raquo;</li>
+        
+      
+    
+    <li>git</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="base">Base</h1>
+<ul>
+<li>status</li>
+</ul>
+<pre><code class="bash">$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+        modified:   docs/myproj/bmp.md
+        modified:   mkdocs.yml
+</code></pre>
+
+<ul>
+<li>add</li>
+</ul>
+<pre><code class="bash">$ git add docs/notes/git.md
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        new file:   docs/notes/git.md
+</code></pre>
+
+<ul>
+<li>commit</li>
+</ul>
+<pre><code class="bash">$ git commit -m &quot;add git usage&quot;
+[master 564d7bc] add git usage
+ 1 file changed, 14 insertions(+)
+ create mode 100644 docs/notes/git.md
+
+</code></pre>
+
+<ul>
+<li>push</li>
+</ul>
+<pre><code class="bash">$ git push
+Enumerating objects: 8, done.
+Counting objects: 100% (8/8), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (5/5), 628 bytes | 628.00 KiB/s, done.
+Total 5 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To https://github.com/zyongzhangyong/mainpage.git
+   eaea8e7..564d7bc  master -&gt; master
+
+</code></pre>
+
+<h1 id="branch">Branch</h1>
+<ul>
+<li>view</li>
+</ul>
+<pre><code class="bash">    $ git branch
+    * master
+</code></pre>
+
+<ul>
+<li>create</li>
+</ul>
+<pre><code class="bash">$ git branch test
+Administrator@PC-20180827CUXX MINGW64 /e/git_rep/github/mainpage/mainpage (master)
+$ git branch
+* master
+  test
+</code></pre>
+
+<ul>
+<li>switch</li>
+</ul>
+<pre><code class="bash">$ git branch
+* master
+  test
+
+Administrator@PC-20180827CUXX MINGW64 /e/git_rep/github/mainpage/mainpage (master)
+$ git checkout test
+Switched to branch 'test'
+M       docs/myproj/bmp.md
+M       docs/notes/git.md
+M       mkdocs.yml
+
+Administrator@PC-20180827CUXX MINGW64 /e/git_rep/github/mainpage/mainpage (test)
+$ git branch
+  master
+* test
+</code></pre>
+
+<ul>
+<li>del</li>
+</ul>
+<pre><code class="bash">$ git checkout master
+Switched to branch 'master'
+M       docs/myproj/bmp.md
+M       docs/notes/git.md
+M       mkdocs.yml
+Your branch is up to date with 'origin/master'.
+
+$ git branch
+* master
+  test
+
+Administrator@PC-20180827CUXX MINGW64 /e/git_rep/github/mainpage/mainpage (master)
+$ git branch -d test
+Deleted branch test (was 564d7bc).
+
+Administrator@PC-20180827CUXX MINGW64 /e/git_rep/github/mainpage/mainpage (master)
+$ git branch
+* master
+</code></pre>
+
+<h1 id="add-ssh-key">Add ssh key</h1>
+<ul>
+<li>create</li>
+</ul>
+<pre><code class="bash">ssh-keygen -t rsa -C &quot;your_email@example.com&quot;
+</code></pre>
+
+<ul>
+<li>
+<p>add pubkey to github</p>
+</li>
+<li>
+<ul>
+<li>1.copy pulic key to clipboard </li>
+</ul>
+</li>
+</ul>
+<pre><code class="bash">clip &lt; ~/.ssh/id_rsa.pub
+</code></pre>
+
+<ul>
+<li>
+<ul>
+<li>2.click setting</li>
+</ul>
+</li>
+</ul>
+<p><img alt="setting.img" src="../../img/github_setting.jpg" /></p>
+<ul>
+<li>
+<ul>
+<li>3.click <code>New SSH key</code> 
+<img alt="ssh.img" src="../../img/github_ssh.jpg" /></li>
+</ul>
+</li>
+<li>
+<ul>
+<li>4.copy string from clipboard and add
+<img alt="sshstring.img" src="../../img/github_ssh_copy.jpg" /></li>
+</ul>
+</li>
+<li>
+<p>clone Repositories with ssh</p>
+</li>
+</ul>
+<p><img alt="clonessh.img" src="../../img/github_clonessh.jpg" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../myproj/bmp/" class="btn btn-neutral float-right" title="bmp">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../python/" class="btn btn-neutral" title="python"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../python/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../myproj/bmp/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
