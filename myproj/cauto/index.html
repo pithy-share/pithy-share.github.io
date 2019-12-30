@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>cauto - zyong</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "cauto";
+    var mkdocs_page_input_path = "myproj\\cauto.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> zyong</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Notes</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../notes/gcc/">gcc</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../notes/python/">python</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">MyProj</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../bmp/">bmp</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">cauto</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#introduction">Introduction</a></li>
+    
+
+    <li class="toctree-l3"><a href="#building">Building</a></li>
+    
+
+    <li class="toctree-l3"><a href="#usage">Usage</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#key">key</a></li>
+        
+            <li><a class="toctree-l4" href="#mouse">mouse</a></li>
+        
+            <li><a class="toctree-l4" href="#image">image</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">zyong</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>MyProj &raquo;</li>
+        
+      
+    
+    <li>cauto</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="introduction">Introduction</h1>
+<p><img alt="github" src="../../img/github.png" />
+<a href="https://github.com/zyongzhangyong/cauto">source code in github</a></p>
+<p>cauto is like python's pyautogui，cauto is developed in c，now support：</p>
+<ul>
+<li>simulate keyboard click</li>
+<li>simulate mouse click</li>
+<li>mouse move</li>
+<li>mouse wheel </li>
+<li>find image position on screen </li>
+</ul>
+<blockquote>
+<p>now only support windows platform </p>
+</blockquote>
+<h1 id="building">Building</h1>
+<ul>
+<li>download mingw</li>
+</ul>
+<p><a href="https://sourceforge.net/projects/mingw-w64/files/latest/download">mingw</a></p>
+<p><a href="http://www.codeblocks.org/downloads/26">codeblock</a>
+（or codeblock with gcc compiler, codeblocks-17.12mingw-setup.exe）</p>
+<ul>
+<li>add environment variable</li>
+<li>run cmd</li>
+</ul>
+<pre><code>E:\git_rep\applib\cauto&gt;gcc -version
+gcc (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0
+Copyright (C) 2018 Free Software Foundation, Inc.
+</code></pre>
+
+<ul>
+<li>download source code and compile </li>
+</ul>
+<pre><code>E:\git_rep\applib\cauto&gt;make.bat
+</code></pre>
+
+<ul>
+<li>run test.exe</li>
+</ul>
+<pre><code>E:\git_rep\applib\cauto&gt;test.exe
+usrp 2019.12.29 10:00:39.15 debug: init
+usrp 2019.12.29 10:00:39.22 debug: width: 1920 hight:1080
+</code></pre>
+
+<h1 id="usage">Usage</h1>
+<p>api is in app_api.h</p>
+<h2 id="key">key</h2>
+<ul>
+<li>key press</li>
+</ul>
+<pre><code class="c">    key_down(KEY_A);
+</code></pre>
+
+<ul>
+<li>key up</li>
+</ul>
+<pre><code class="c">    key_up(KEY_A);
+</code></pre>
+
+<ul>
+<li>click </li>
+</ul>
+<pre><code class="c">    key_click(KEY_A);//key  A
+    key_shift(KEY_B);//key  shift + B
+    key_alt(KEY_A);//key alt + A
+    key_ctl(KEY_A);//key ctrl + A
+</code></pre>
+
+<ul>
+<li>double click </li>
+</ul>
+<pre><code class="c">    double_click(KEY_A);
+</code></pre>
+
+<ul>
+<li>multi click</li>
+</ul>
+<pre><code class="c">    key_clicks_mul(KEY_A, 5, 0);//click key A 5 times，interval 0 ms
+</code></pre>
+
+<ul>
+<li>multi keys</li>
+</ul>
+<pre><code class="c">    key_num_t ctrl_k[] = {KEY_CTRL, KEY_A};
+    mul_keys_click(ctrl_k, sizeof(ctrl_k)/sizeof(key_num_t), 0);//interval 0 ms
+    /*Equivalent to*/
+    key_down(KEY_CTRL);
+    key_down(KEY_A);
+    key_up(KEY_A);
+    key_up(KEY_CTRL);
+</code></pre>
+
+<h2 id="mouse">mouse</h2>
+<ul>
+<li>key(same to keyboard)<ul>
+<li>KEY_MOUSE_L(Left key) </li>
+<li>KEY_MOUSE_M(Middle key) </li>
+<li>KEY_MOUSE_R(Right key)</li>
+</ul>
+</li>
+</ul>
+<pre><code class="c">    key_click(KEY_MOUSE_L);// click mouse's left key
+</code></pre>
+
+<ul>
+<li>motion <blockquote>
+<p>Coordinate System:top left corner is(0,0), x coordinate  add when go right, y coordinate add when go down.</p>
+</blockquote>
+</li>
+</ul>
+<pre><code class="c">    pos_t cur;
+    mouse_move(100, 100);// move mouse to （x=100,y=100）
+    mouse_get(&amp;cur);// get mouse's position 
+</code></pre>
+
+<ul>
+<li>wheel </li>
+</ul>
+<pre><code class="c">    mouse_wheel(100); // up 100
+    mouse_wheel(-100);// down 100
+</code></pre>
+
+<h2 id="image">image</h2>
+<ul>
+<li>find image </li>
+</ul>
+<p><img alt="7.img" src="../../img/7.bmp" />"7.bmp"</p>
+<p><img alt=".img" src="../../img/=.bmp" />"=.bmp"</p>
+<pre><code class="c">    u32 cnts;
+    int i;
+
+
+    /*
+    find 7.bmp image ,return count and position 
+    0.99 means similarity
+    NULL，find rectangle ,NULL means all screen 
+    */
+    cnts = find_img(&quot;7.bmp&quot;, 0.99, NULL);
+
+    M_INFO(&quot;cnts:%u\n&quot;, cnts);
+    for(i = 0; i &lt; cnts; i ++) {
+        M_INFO(&quot;x:%u y:%u\n&quot;, find_res[i].x, find_res[i].y);
+    }
+</code></pre>
+
+<ul>
+<li>find and click image </li>
+</ul>
+<pre><code class="c">    click_img(&quot;=.bmp&quot;, 0.99, NULL);
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../bmp/" class="btn btn-neutral" title="bmp"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../bmp/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+
+</body>
+</html>
