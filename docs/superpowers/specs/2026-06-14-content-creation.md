@@ -32,7 +32,7 @@
 - frontmatter 按架构 spec §4.1：`title` / `order` / `part` / `draft`。
 - 正文统一三段式：**直觉 →（关键处）极简图示 → 可交互演示**。
 - `part` 分组：`导览` / `原理骨` / `LLM 核心` / `LLM 工程应用`。
-- 章节清单、顺序、part 归属在 `chapters/outline.md` 维护；改章节只动它 + 对应 `.md`。
+- 实际顺序与 part 归属由各章 frontmatter 的 `order` / `part` 决定（侧边栏 config 自动读取，见架构 spec §4.1）；`chapters/outline.md` 只是给人看的章节总览，不参与排序。改章节：动对应 `.md` 的 frontmatter，outline.md 按需同步描述。
 
 ## 6. 演示（"▶ 动手"）的内容侧约定（对接架构 spec §4.2 / §5）
 - 每章"动手" = 一个 **Vue 3 SFC 演示**（`<script setup lang="ts">`），用 `<DemoFrame>` 挂入（架构 spec §4.3）。用户通过**界面参数控件**（滑块 / 输入 / 按钮）交互，**不编辑代码**。
