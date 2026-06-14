@@ -74,7 +74,7 @@ function buildSidebar() {
 export default defineConfig({
   title: '从0到1理解AI',
   description: '一份自己也能学懂的 AI 科普教材',
-  base: '/ai-learn/',
+  base: '/',
   cleanUrls: true,
   lastUpdated: true,
   srcExclude: ['docs/**', 'node_modules'],
