@@ -51,7 +51,7 @@ Node ≥ 18（VitePress 要求）。
 ## 4. 内容接入契约（核心）
 
 ### 4.1 章节契约
-- 一个章节 = `chapters/` 下一个 `.md`，命名 `chNN-<slug>.md`
+- 一个章节 = `chapters/` 下一个 `.md`，命名 `chNNN-<slug>.md`（三位，长期够用）
 - frontmatter：`title` / `order` / `part` / `draft`（true 则不进侧边栏）
 - `part` 取值与大纲对应：`导览`(Part 0) / `原理骨`(A) / `LLM 核心`(B) / `LLM 工程应用`(C)
 - **侧边栏由 config 自动生成**（读 `chapters/` + frontmatter），新增章节无需手改 config
