@@ -32,37 +32,48 @@
 
 ## 动手：看旋钮自己滑到对的位置
 
-造一批满足 `y = 2x + 3` 的带噪声数据点，从旋钮全归零开始，让机器自己把这条直线学出来。
+造一批满足 `y = 2x + 3` 的带噪声数据点，从旋钮全归零开始，让机器自己把这条直线学出来（JavaScript，浏览器里直接能跑）。
 
-```python
-import random
-random.seed(0)            # 固定随机种子，你跑出来的数和我一模一样
+```js
+// 固定种子的随机数发生器（让每次跑结果都一样），细节不用管
+function makeRand(seed) {
+  return () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
+}
+const rand = makeRand(1);
 
-true_w, true_b = 2.0, 3.0
-xs = [0.1 * i for i in range(-20, 21)]                  # x: -2.0 ~ 2.0
-ys = [true_w * x + true_b + random.gauss(0, 0.2) for x in xs]
+const trueW = 2.0, trueB = 3.0;
+const xs = Array.from({ length: 41 }, (_, i) => 0.1 * (i - 20));   // x: -2.0 ~ 2.0
+const ys = xs.map(x => trueW * x + trueB + (rand() - 0.5) * 0.4);  // 加点噪声
 
-w, b = 0.0, 0.0
-lr = 0.01
-for step in range(1000):
-    # 两个旋钮各自的"坡度"：误差乘上各自的份量，加起来
-    grad_w = sum(2 * (w*x + b - y) * x for x, y in zip(xs, ys)) / len(xs)
-    grad_b = sum(2 * (w*x + b - y)       for x, y in zip(xs, ys)) / len(xs)
-    w -= lr * grad_w      # 往下坡方向拧 w 一小格
-    b -= lr * grad_b      # 拧 b 一小格
-    if step % 200 == 0:
-        loss = sum((w*x + b - y)**2 for x, y in zip(xs, ys)) / len(xs)
-        print(f"step {step:4d}  w={w:.3f}  b={b:.3f}  loss={loss:.4f}")
-print(f"学到的直线：y = {w:.3f}·x + {b:.3f}")
+let w = 0, b = 0, lr = 0.01;
+for (let step = 0; step < 1000; step++) {
+  // 两个旋钮各自的"坡度"：误差乘上各自的份量，求平均
+  let gradW = 0, gradB = 0;
+  for (let i = 0; i < xs.length; i++) {
+    const err = w * xs[i] + b - ys[i];
+    gradW += 2 * err * xs[i];
+    gradB += 2 * err;
+  }
+  gradW /= xs.length; gradB /= xs.length;
+  w -= lr * gradW;   // 往下坡方向拧 w 一小格
+  b -= lr * gradB;   // 拧 b 一小格
+  if (step % 200 === 0) {
+    let loss = 0;
+    for (let i = 0; i < xs.length; i++) loss += (w * xs[i] + b - ys[i]) ** 2;
+    loss /= xs.length;
+    console.log(`step ${step}  w=${w.toFixed(3)}  b=${b.toFixed(3)}  loss=${loss.toFixed(4)}`);
+  }
+}
+console.log(`学到的直线：y = ${w.toFixed(3)}·x + ${b.toFixed(3)}`);
 ```
 
 ```
-step    0  w=0.056  b=0.060  loss=13.9584
-step  200  w=2.006  b=2.933  loss=0.0513
-step  400  w=2.012  b=2.983  loss=0.0485
-step  600  w=2.012  b=2.984  loss=0.0485
-step  800  w=2.012  b=2.984  loss=0.0485
-学到的直线：y = 2.012·x + 2.984
+step 0  w=0.057  b=0.060  loss=14.1163
+step 200  w=2.022  b=2.951  loss=0.0147
+step 400  w=2.028  b=3.002  loss=0.0119
+step 600  w=2.028  b=3.003  loss=0.0119
+step 800  w=2.028  b=3.003  loss=0.0119
+学到的直线：y = 2.028·x + 3.003
 ```
 
 `w`、`b` 两个旋钮从 0 自己拧到了 `2` 和 `3`——我们从没告诉它答案，**这就是学习在发生**。把 `lr` 调到 `0.5`，看它一步跨过最优值、来回震荡。
