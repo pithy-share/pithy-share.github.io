@@ -1,3 +1,9 @@
+---
+title: 第 1 章　机器到底怎么"学"
+order: 1
+part: 原理骨
+---
+
 # 第 1 章　机器到底怎么"学"
 
 > **第一性原理 #1：学习 = 参数更新。** 所有机器学习、所有大模型训练，剥到底都是同一件事：调参数，让误差变小。这一章只讲清楚这一件事。
@@ -32,51 +38,17 @@
 
 ## 动手：看旋钮自己滑到对的位置
 
-造一批满足 `y = 2x + 3` 的带噪声数据点，从旋钮全归零开始，让机器自己把这条直线学出来（JavaScript，浏览器里直接能跑）。
+造一批满足 `y = 2x + 3` 的带噪声数据点，从旋钮全归零开始，让机器自己把这条直线学出来。点"运行"，盯住 `w`、`b`——它们从 0 自己滑向 `2` 和 `3`，我们从没告诉过它答案；**这就是学习在发生**。
 
-```js
-// 固定种子的随机数发生器（让每次跑结果都一样），细节不用管
-function makeRand(seed) {
-  return () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
-}
-const rand = makeRand(1);
+<script setup>
+import LineFitDemo from './LineFitDemo.vue'
+</script>
 
-const trueW = 2.0, trueB = 3.0;
-const xs = Array.from({ length: 41 }, (_, i) => 0.1 * (i - 20));   // x: -2.0 ~ 2.0
-const ys = xs.map(x => trueW * x + trueB + (rand() - 0.5) * 0.4);  // 加点噪声
+<DemoFrame title="线性回归：参数自己滑到对的位置" hint="拖动学习率，看点怎么收敛">
+  <LineFitDemo />
+</DemoFrame>
 
-let w = 0, b = 0, lr = 0.01;
-for (let step = 0; step < 1000; step++) {
-  // 两个旋钮各自的"坡度"：误差乘上各自的份量，求平均
-  let gradW = 0, gradB = 0;
-  for (let i = 0; i < xs.length; i++) {
-    const err = w * xs[i] + b - ys[i];
-    gradW += 2 * err * xs[i];
-    gradB += 2 * err;
-  }
-  gradW /= xs.length; gradB /= xs.length;
-  w -= lr * gradW;   // 往下坡方向拧 w 一小格
-  b -= lr * gradB;   // 拧 b 一小格
-  if (step % 200 === 0) {
-    let loss = 0;
-    for (let i = 0; i < xs.length; i++) loss += (w * xs[i] + b - ys[i]) ** 2;
-    loss /= xs.length;
-    console.log(`step ${step}  w=${w.toFixed(3)}  b=${b.toFixed(3)}  loss=${loss.toFixed(4)}`);
-  }
-}
-console.log(`学到的直线：y = ${w.toFixed(3)}·x + ${b.toFixed(3)}`);
-```
-
-```
-step 0  w=0.057  b=0.060  loss=14.1163
-step 200  w=2.022  b=2.951  loss=0.0147
-step 400  w=2.028  b=3.002  loss=0.0119
-step 600  w=2.028  b=3.003  loss=0.0119
-step 800  w=2.028  b=3.003  loss=0.0119
-学到的直线：y = 2.028·x + 3.003
-```
-
-`w`、`b` 两个旋钮从 0 自己拧到了 `2` 和 `3`——我们从没告诉它答案，**这就是学习在发生**。把 `lr` 调到 `0.5`，看它一步跨过最优值、来回震荡。
+把学习率拖大（比如接近 0.2），看它一步跨过最优值、来回震荡甚至飞掉；拖小，看它磨磨蹭蹭。这就是学习率这个旋钮的作用。
 
 ## 底座
 

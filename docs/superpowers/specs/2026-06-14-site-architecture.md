@@ -1,7 +1,7 @@
 # 《从0到1理解AI》网站架构 Spec
 
 > 日期：2026-06-14
-> 状态：架构已定（VitePress 外壳 + Vue 3 SFC 演示，参数控件驱动），待作者审阅 → writing-plans
+> 状态：平台已搭起（VitePress 外壳 + DemoFrame + ch001 样板），本地可跑
 >
 > **范围声明**：本文档只定义技术架构与平台基础设施。内容（章节清单、正文、演示逻辑）见 [内容创作 spec](./2026-06-14-content-creation.md)。核心：演示是 Vue 组件，用户通过界面参数控件交互，**不编辑代码**。
 
@@ -24,40 +24,41 @@ VitePress（Vue 3 静态文档 / 书籍生成器）+ Vue 3 SFC（`<script setup 
 
 ---
 
-## 3. 站点骨架
+## 3. 站点骨架（模块化：一章一目录）
 
 ```
 ai-learn/
 ├── .vitepress/
-│   ├── config.ts            # nav / sidebar / base / 主题
-│   ├── theme/index.ts       # 主题扩展、注册全局组件
+│   ├── config.ts            # nav / sidebar（按 frontmatter 自动生成）/ base / 主题
+│   ├── theme/index.ts       # 全局注册 DemoFrame 等
 │   └── cache/
 ├── public/                  # 静态资源
-├── chapters/                # 章节 Markdown
-├── demos/                   # 演示 SFC（.vue，每个独立、自包含）
-├── components/
-│   ├── ApiKeyInput.vue      # 统一"粘 key"输入
-│   └── DemoFrame.vue        # 演示外框（标题 / 说明 / 重置 / 错误）
-├── composables/
-│   └── useApiKey.ts         # API key 读写（localStorage 单例）
-├── index.md
-└── package.json
+├── components/              # 跨章节共享基础设施
+│   └── DemoFrame.vue        # 演示外框（标题 / 提示 / 重置）
+├── chapters/
+│   ├── outline.md           # 公开目录 / 总览页
+│   └── ch001/               # ← 每章一个独立目录（模块）
+│       ├── index.md         # 正文 + frontmatter + <DemoFrame> 嵌入
+│       └── LineFitDemo.vue  # 本章演示（与正文同目录）
+├── index.md                 # 首页
+├── package.json
+└── .gitignore
 ```
 
-Node ≥ 18（VitePress 要求）。
+**一章一目录**：`chapters/chNNN/` 是独立模块，正文 + 演示放一起，不依赖其他章节 → 便于维护与并行开发。Node ≥ 18（VitePress 要求）。
 
 ---
 
 ## 4. 内容接入契约（核心）
 
 ### 4.1 章节契约
-- 一个章节 = `chapters/` 下一个 `.md`，命名 `chNNN-<slug>.md`（三位，长期够用）
+- 一个章节 = `chapters/chNNN/` 一个目录，正文是其中的 `index.md`（三位编号，长期够用）
 - frontmatter：`title` / `order` / `part` / `draft`（true 则不进侧边栏）
 - `part` 取值与大纲对应：`导览`(Part 0) / `原理骨`(A) / `LLM 核心`(B) / `LLM 工程应用`(C)
-- **侧边栏由 config 自动生成**（读 `chapters/` + frontmatter），新增章节无需手改 config
+- **侧边栏由 config 自动生成**（读 `chapters/` 下所有 `.md` 的 frontmatter），新增章节无需手改 config
 
 ### 4.2 演示组件契约
-每个演示 = `demos/` 下一个 `.vue` SFC：
+每个演示 = 章节目录下一个 `.vue` SFC（与 `index.md` 同目录）：
 - **自包含**：不 import 章节特定代码；只依赖共享基础设施（`useApiKey`、`components/*`）
 - **参数控件驱动**：交互通过界面控件，用户不改代码
 - **接口**：可选 props（如 `{ title? }`）；内部自管状态；可 reset
@@ -67,14 +68,14 @@ Node ≥ 18（VitePress 要求）。
 ### 4.3 在章节里挂入
 ```md
 <script setup>
-import LineFitDemo from '../demos/LineFitDemo.vue'
+import LineFitDemo from './LineFitDemo.vue'   // 与正文同目录
 </script>
 
 <DemoFrame title="线性回归：参数自己滑到对的位置" hint="拖动学习率，看点怎么收敛">
   <LineFitDemo />
 </DemoFrame>
 ```
-VitePress 原生支持 Markdown 内写 Vue。一章可挂多个演示。
+VitePress 原生支持 Markdown 内写 Vue。`<DemoFrame>` 全局注册（无需 import），本章演示就近 import。一章可挂多个演示。
 
 ---
 
@@ -90,9 +91,8 @@ VitePress 原生支持 Markdown 内写 Vue。一章可挂多个演示。
 
 ## 6. 共享基础设施
 
-- **`useApiKey`**：key 存 localStorage，全站复用；就 get / set 两件事。
-- **`<ApiKeyInput>`**：一行提示 + 输入框，用户粘贴自己的 key。
-- **`<DemoFrame>`**：演示外框——标题 / 一句话说明 / reset / 错误提示位；让所有演示视觉一致。
+- **`<DemoFrame>`**（已建）：演示外框——标题 / 一句话说明 / reset（改 key 重挂载组件）/ 错误提示位；让所有演示视觉一致。
+- **`useApiKey`** + **`<ApiKeyInput>`**（待 ch005 加）：用户在输入框粘自己的 key，存 localStorage 全站复用。
 
 ---
 
@@ -132,7 +132,7 @@ npm run docs:preview  # 预览构建产物
 ## 10. 平台验收
 
 - `run` / `verify`：本地起站，确认骨架（首页 / 侧边栏 / 搜索 / 暗色 / 代码高亮）正常。
-- 用 **1 个 Simulation 样板 + 1 个 API 样板**验证两类原型与 §4 契约打通（样板仅为验证平台）。
+- 用 **1 个 Simulation 样板（ch001 LineFitDemo，已建）+ 1 个 API 样板（待 ch005）**验证两类原型与 §4 契约打通。
 - `code-review` / `simplify` 审平台代码。
 - 章节 / 演示的具体验收属内容阶段。
 
@@ -140,6 +140,7 @@ npm run docs:preview  # 预览构建产物
 
 ## 11. 后续步骤
 
-1. 作者审阅本架构 spec。
-2. 进 `writing-plans`，拆**平台**实现计划（VitePress 外壳 + DemoFrame / useApiKey + 两类样板演示）。
-3. 内容侧按 §4 契约生成章节 + 演示（与平台工作互不阻塞；Ch1 梯度下降逻辑待落成 Vue SFC 演示）。
+1. 平台已搭起（VitePress 外壳 + DemoFrame + ch001 样板），本地 `npm run docs:dev` 可跑。
+2. 加 GitHub Actions CI：默认分支推送 → `docs:build` → 部署 Pages（`base` 已配 `/ai-learn/`）。
+3. 到 ch005 时补 `useApiKey` + `<ApiKeyInput>` + API-backed 样板。
+4. 其余章节照 ch001 模板（每章一个 `chNNN/` 目录，正文 + 演示同放）。

@@ -1,6 +1,12 @@
+---
+title: 目录
+order: 0
+part: 导览
+---
+
 # 《从0到1理解AI》— 章节大纲
 
-> 内容清单与结构。**创作原则**见 [内容创作 spec](../docs/superpowers/specs/2026-06-14-content-creation.md)；**技术平台**见 [网站架构 spec](../docs/superpowers/specs/2026-06-14-site-architecture.md)。本文件只管"有哪些章、怎么排"。
+> 全书 14 章的清单与结构。
 
 ---
 
