@@ -78,6 +78,13 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: true,
   srcExclude: ['docs/**', 'node_modules'],
+  // 钉死开发端口：占用则直接报错，不再顺延，避免端口变来变去
+  vite: {
+    server: {
+      port: 5173,
+      strictPort: true
+    }
+  },
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },

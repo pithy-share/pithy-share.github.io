@@ -2,15 +2,15 @@
 layout: home
 
 hero:
-  name: "从0到1理解AI"
-  text: 一份自己也能学懂的 AI 科普教材
-  tagline: 从神经元走到 agent，把第一性原理讲透
+  name: 第一性原理 · 通识
+  text: 从 0 到 1 理解 AI
+  tagline: 从神经元走到 agent，只用小学数学，把每个概念追到它最底层的原理——再动手把玩。
   actions:
     - theme: brand
       text: 开始阅读
       link: /chapters/ch001
     - theme: alt
-      text: 目录
+      text: 查看目录
       link: /chapters/outline
 
 features:

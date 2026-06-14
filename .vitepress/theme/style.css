@@ -1,0 +1,270 @@
+/* ======================================================================
+   《从0到1理解AI》— 设计系统「坐标纸笔记本」(graph-paper notebook)
+   方向 A：冷纸 + 靛蓝 + 等宽数字 + 全站坐标纸签名
+   只覆写 VitePress CSS 变量 + 必要的元素选择器；不引入依赖。
+   ====================================================================== */
+
+/* ---------- 设计令牌 ---------- */
+:root {
+  /* 调色（亮：白坐标纸） */
+  --paper:       #F6F7F9;
+  --paper-soft:  #FFFFFF;
+  --paper-alt:   #ECEFF4;
+  --ink:         #1A1D23;
+  --ink-2:       #5A6273;
+  --ink-3:       #8A91A0;
+  --rule:        #E1E4EA;
+  --indigo:      #2D4EF5;
+  --indigo-2:    #1E40D6;
+  --indigo-3:    #1531A8;
+  --indigo-soft: rgba(45, 78, 245, 0.12);
+  --grid:        rgba(26, 29, 35, 0.05);
+
+  /* 字体 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC",
+    "Source Han Sans SC", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Code", "SFMono-Regular",
+    "SF Mono", "Fira Code", Consolas, "Liberation Mono", "DejaVu Sans Mono",
+    ui-monospace, monospace;
+
+  /* —— 字号尺度（type scale）：全站唯一来源，所有章节 / 演示共用 ——
+     改字号只动这里；各处用 var(--fs-*) 引用，不写裸数值。 */
+  --fs-eyebrow:    0.86rem; /* 等宽小眉标：hero name / 侧边栏 Part / 演示提示 / 曲线说明 */
+  --fs-eyebrow-lg: 0.98rem; /* 大号等宽眉标：信条标题 */
+  --fs-label:      0.82rem; /* 等宽数据标签：按钮 / 章节号 / 参数值 / stat */
+  --fs-meta:       0.94rem; /* 次级正文：地图章节标题 / 演示控件行 */
+  --fs-body:       17px;    /* 阅读正文（章节正文列） */
+  --fs-lead:       1.02rem; /* 加重次级：信条正文 */
+  --fs-title:      1rem;    /* 小标题：演示框标题 / Part 名 */
+  --fs-h3:         1.12rem; /* 章节三级标题 */
+  --fs-h2:         1.45rem; /* 章节二级标题 */
+  --fs-h1:         2.05rem; /* 章节一级标题 */
+  --fs-display:    1.5rem;  /* 区块大标题：全书地图 */
+  --fs-axis:       12px;    /* SVG 坐标轴标签 */
+  --fs-anno:       13px;    /* SVG 标注 */
+
+  /* 映射到 VitePress 品牌变量 —— 链接 / 激活 / 拟合线 / 按钮全跟着走 */
+  --vp-c-brand-1: var(--indigo);
+  --vp-c-brand-2: var(--indigo-2);
+  --vp-c-brand-3: var(--indigo-3);
+  --vp-c-brand-soft: var(--indigo-soft);
+
+  --vp-c-bg:         var(--paper);
+  --vp-c-bg-soft:    var(--paper-soft);
+  --vp-c-bg-alt:     var(--paper-alt);
+  --vp-c-bg-soft-up: var(--paper-soft);
+
+  --vp-c-text-1: var(--ink);
+  --vp-c-text-2: var(--ink-2);
+  --vp-c-text-3: var(--ink-3);
+
+  --vp-c-divider: var(--rule);
+  --vp-c-border:  var(--rule);
+  --vp-c-gutter:  var(--rule);
+
+  --vp-font-family-base: var(--font-sans);
+  --vp-font-family-mono: var(--font-mono);
+
+  /* 主按钮 = 靛蓝实心 */
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text:   #ffffff;
+  --vp-button-brand-bg:     var(--indigo);
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text:   #ffffff;
+  --vp-button-brand-hover-bg:     var(--indigo-2);
+
+  /* 次按钮 = 墨色描边 */
+  --vp-button-alt-border: var(--rule);
+  --vp-button-alt-text:   var(--ink);
+  --vp-button-alt-bg:     transparent;
+  --vp-button-alt-hover-border: var(--ink);
+  --vp-button-alt-hover-text:   var(--ink);
+  --vp-button-alt-hover-bg:     transparent;
+}
+
+.dark {
+  --paper:       #0F121A;
+  --paper-soft:  #161A24;
+  --paper-alt:   #0B0E14;
+  --ink:         #E6E9EF;
+  --ink-2:       #9AA3B2;
+  --ink-3:       #6B7384;
+  --rule:        #222838;
+  --indigo:      #6E8AFF;
+  --indigo-2:    #8AA0FF;
+  --indigo-3:    #5B7CFF;
+  --indigo-soft: rgba(110, 138, 255, 0.16);
+  --grid:        rgba(255, 255, 255, 0.045);
+
+  --vp-c-bg:      var(--paper);
+  --vp-c-bg-soft: var(--paper-soft);
+  --vp-c-bg-alt:  var(--paper-alt);
+
+  --vp-button-brand-text:       #0F121A;
+  --vp-button-brand-hover-text: #0F121A;
+}
+
+/* ---------- 全站坐标纸 ---------- */
+html, body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px;
+  background-position: -1px -1px;
+}
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+/* 等宽一律表格数字对齐，损失值 / 参数整齐 */
+code, kbd, pre, .vp-doc :not(pre) > code {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 导航栏：实色盖住格线 ---------- */
+.VPNavBar {
+  background-color: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+.VPNavBar .content { background-color: transparent; }
+.VPNavBarTitle .title { font-weight: 650; letter-spacing: -0.01em; }
+
+/* ---------- 侧边栏 ---------- */
+.VPSidebar {
+  background-color: var(--paper);
+  border-right: 1px solid var(--rule);
+}
+.VPSidebar .group-title {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: 0.05em;
+  color: var(--ink-3);
+}
+
+/* ---------- 首页 Hero ---------- */
+.VPHero .name {
+  color: var(--indigo);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: 0.06em;
+  background: none;
+  -webkit-text-fill-color: var(--indigo);
+}
+.VPHero .text {
+  color: var(--ink);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  padding-top: 10px;
+  background: none;
+  -webkit-text-fill-color: var(--ink);
+}
+.VPHero .tagline {
+  color: var(--ink-2);
+  line-height: 1.65;
+}
+
+/* ---------- 首页三信条：去卡片，改编辑式细线栏 ---------- */
+.VPFeatures { margin-top: 8px; }
+.VPFeatures .container { max-width: 1152px; }
+.VPFeatures .items {
+  border-top: 1px solid var(--rule);
+  padding-top: 0;
+}
+.VPFeatures .item { padding-top: 28px; }
+.VPFeatures .VPFeature {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  transition: none;
+}
+.VPFeatures .VPFeature:hover {
+  background: transparent;
+  box-shadow: none;
+}
+.VPFeatures .VPFeature .title {
+  color: var(--indigo);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--fs-eyebrow-lg);
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+.VPFeatures .VPFeature .details {
+  color: var(--ink-2);
+  font-size: var(--fs-lead);
+  line-height: 1.75;
+  margin-top: 10px;
+}
+
+/* ---------- 阅读正文 ---------- */
+.vp-doc {
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.85;
+}
+.vp-doc h1, .vp-doc h2, .vp-doc h3, .vp-doc h4 {
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.vp-doc h1 { font-size: var(--fs-h1); line-height: 1.2; }
+.vp-doc h2 {
+  border-top: 1px solid var(--rule);
+  margin-top: 2.6em;
+  padding-top: 1.3em;
+  font-size: var(--fs-h2);
+}
+.vp-doc h3 { font-size: var(--fs-h3); }
+.vp-doc p, .vp-doc li { color: var(--ink); }
+.vp-doc a { color: var(--indigo); text-decoration: none; font-weight: 500; }
+.vp-doc a:hover { text-decoration: underline; }
+.vp-doc strong { color: var(--ink); font-weight: 650; }
+
+/* 行内 code：靛蓝淡底等宽 */
+.vp-doc :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--indigo);
+  background: var(--indigo-soft);
+  padding: 0.12em 0.4em;
+  border-radius: 4px;
+  border: none;
+}
+
+/* 引用块：第一性原理 / 底座 → 靛蓝左栏面板 */
+.vp-doc blockquote {
+  position: relative;
+  margin: 20px 0;
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--indigo);
+  border-radius: 6px;
+  background: var(--paper-soft);
+  color: var(--ink);
+  line-height: 1.75;
+}
+.vp-doc blockquote p { margin: 0.45em 0; }
+
+/* 代码块：细线圆角 */
+.vp-doc div[class*='language-'] {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+}
+
+/* ---------- 降级：减弱动效 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

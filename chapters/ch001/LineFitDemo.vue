@@ -236,7 +236,7 @@ onBeforeUnmount(() => {
   flex: 1 1 300px;
 }
 .lfd__label {
-  font-size: 0.72rem;
+  font-size: var(--fs-label);
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -262,7 +262,7 @@ onBeforeUnmount(() => {
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px solid var(--vp-c-divider);
-  font-size: 0.85rem;
+  font-size: var(--fs-meta);
 }
 .lfd__btn {
   padding: 5px 18px;
@@ -270,7 +270,7 @@ onBeforeUnmount(() => {
   border-radius: 20px;
   background: var(--vp-button-brand-bg);
   color: var(--vp-button-brand-text);
-  font-size: 0.85rem;
+  font-size: var(--fs-label);
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.15s, border-color 0.15s;
@@ -300,6 +300,6 @@ onBeforeUnmount(() => {
   color: var(--vp-c-text-2);
   font-variant-numeric: tabular-nums;
   font-family: var(--vp-font-family-mono);
-  font-size: 0.82rem;
+  font-size: var(--fs-label);
 }
 </style>
