@@ -93,29 +93,55 @@ function sizeAll() {
   }
 }
 
+// 从 VitePress 主题读颜色，让 canvas 跟着亮 / 暗模式走
+function themeColors() {
+  const s = getComputedStyle(document.documentElement)
+  const get = (v: string, fb: string) => s.getPropertyValue(v).trim() || fb
+  return {
+    grid: get('--vp-c-divider', '#e2e2e2'),
+    axis: get('--vp-c-border', '#b0b0b0'),
+    point: get('--vp-c-text-2', '#888'),
+    brand: get('--vp-c-brand-1', '#3aa070'),
+    muted: get('--vp-c-text-3', '#aaa')
+  }
+}
+
 function drawScatter() {
   const c = scatter.value
   if (!c) return
   const ctx = c.getContext('2d')!
   const rect = c.getBoundingClientRect()
   const W = rect.width, H = rect.height
+  const col = themeColors()
   ctx.clearRect(0, 0, W, H)
-  const pad = 30
+  const pad = 34
   const px = (x: number) => pad + (x - X_MIN) / (X_MAX - X_MIN) * (W - 2 * pad)
   const py = (y: number) => H - pad - (y - Y_MIN) / (Y_MAX - Y_MIN) * (H - 2 * pad)
-  // 坐标轴
-  ctx.strokeStyle = '#999'
+  // 网格线（淡）
+  ctx.strokeStyle = col.grid
   ctx.lineWidth = 1
+  ctx.globalAlpha = 0.6
+  for (let gx = -2; gx <= 2; gx++) {
+    if (gx === 0) continue
+    ctx.beginPath(); ctx.moveTo(px(gx), pad); ctx.lineTo(px(gx), H - pad); ctx.stroke()
+  }
+  for (let gy = 2; gy <= 8; gy += 2) {
+    ctx.beginPath(); ctx.moveTo(pad, py(gy)); ctx.lineTo(W - pad, py(gy)); ctx.stroke()
+  }
+  ctx.globalAlpha = 1
+  // 坐标轴（0 线，较实）
+  ctx.strokeStyle = col.axis
+  ctx.lineWidth = 1.5
   ctx.beginPath(); ctx.moveTo(pad, py(0)); ctx.lineTo(W - pad, py(0)); ctx.stroke()
   ctx.beginPath(); ctx.moveTo(px(0), pad); ctx.lineTo(px(0), H - pad); ctx.stroke()
   // 数据点
-  ctx.fillStyle = '#3aa76d'
+  ctx.fillStyle = col.point
   for (let i = 0; i < N; i++) {
-    ctx.beginPath(); ctx.arc(px(xs[i]), py(ys[i]), 3, 0, Math.PI * 2); ctx.fill()
+    ctx.beginPath(); ctx.arc(px(xs[i]), py(ys[i]), 3.5, 0, Math.PI * 2); ctx.fill()
   }
   // 拟合直线
-  ctx.strokeStyle = '#e5484d'
-  ctx.lineWidth = 2
+  ctx.strokeStyle = col.brand
+  ctx.lineWidth = 2.5
   ctx.beginPath()
   ctx.moveTo(px(X_MIN), py(w.value * X_MIN + b.value))
   ctx.lineTo(px(X_MAX), py(w.value * X_MAX + b.value))
@@ -128,19 +154,25 @@ function drawLoss() {
   const ctx = c.getContext('2d')!
   const rect = c.getBoundingClientRect()
   const W = rect.width, H = rect.height
+  const col = themeColors()
   ctx.clearRect(0, 0, W, H)
   const pad = 24
   const hist = lossHistory.value
   if (hist.length < 2) {
-    ctx.fillStyle = '#999'
-    ctx.font = '13px sans-serif'
+    ctx.fillStyle = col.muted
+    ctx.font = '13px system-ui, sans-serif'
     ctx.fillText('点"运行"开始训练', pad, H / 2)
     return
   }
   const maxL = Math.max(...hist)
   const px = (i: number) => pad + (i / (hist.length - 1)) * (W - 2 * pad)
   const py = (l: number) => H - pad - (l / maxL) * (H - 2 * pad)
-  ctx.strokeStyle = '#4a90e2'
+  // 底线
+  ctx.strokeStyle = col.grid
+  ctx.lineWidth = 1
+  ctx.beginPath(); ctx.moveTo(pad, H - pad); ctx.lineTo(W - pad, H - pad); ctx.stroke()
+  // 损失曲线
+  ctx.strokeStyle = col.brand
   ctx.lineWidth = 2
   ctx.beginPath()
   hist.forEach((l, i) => (i ? ctx.lineTo(px(i), py(l)) : ctx.moveTo(px(i), py(l))))
@@ -173,7 +205,7 @@ onBeforeUnmount(() => {
         <div class="lfd__label">数据点 + 拟合直线</div>
         <canvas ref="scatter" class="lfd__canvas"></canvas>
       </div>
-      <div class="lfd__panel">
+      <div class="lfd__panel lfd__panel--sm">
         <div class="lfd__label">损失曲线</div>
         <canvas ref="lossCv" class="lfd__canvas lfd__canvas--sm"></canvas>
       </div>
@@ -183,11 +215,12 @@ onBeforeUnmount(() => {
         {{ running ? '暂停' : (stepCount > 0 ? '继续' : '运行') }}
       </button>
       <label class="lfd__slider">
-        学习率 lr = <b>{{ lr.toFixed(3) }}</b>
+        <span class="lfd__slider-label">学习率</span>
         <input type="range" min="0.001" max="0.2" step="0.001" v-model.number="lr" />
+        <span class="lfd__slider-value">{{ lr.toFixed(3) }}</span>
       </label>
       <span class="lfd__stat">
-        步骤 {{ stepCount }} · w = {{ w.toFixed(3) }} · b = {{ b.toFixed(3) }} · loss = {{ currentLoss.toFixed(4) }}
+        w = {{ w.toFixed(3) }} · b = {{ b.toFixed(3) }} · loss = {{ currentLoss.toFixed(4) }}
       </span>
     </div>
   </div>
@@ -196,51 +229,77 @@ onBeforeUnmount(() => {
 <style scoped>
 .lfd__row {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 .lfd__panel {
-  flex: 1 1 280px;
+  flex: 1 1 300px;
 }
 .lfd__label {
-  font-size: 0.8rem;
-  color: var(--vp-c-text-2);
-  margin-bottom: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-3);
+  margin-bottom: 6px;
 }
 .lfd__canvas {
   width: 100%;
-  height: 260px;
+  height: 290px;
   display: block;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 6px;
-  background: var(--vp-c-bg-soft);
+  border-radius: 8px;
+  background: var(--vp-c-bg);
 }
 .lfd__canvas--sm {
-  height: 160px;
+  height: 170px;
 }
 .lfd__ctrl {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--vp-c-divider);
   font-size: 0.85rem;
 }
 .lfd__btn {
-  padding: 4px 16px;
-  border: 1px solid var(--vp-c-brand);
-  border-radius: 6px;
-  background: var(--vp-c-brand);
-  color: #fff;
-  cursor: pointer;
+  padding: 5px 18px;
+  border: 1px solid var(--vp-button-brand-border);
+  border-radius: 20px;
+  background: var(--vp-button-brand-bg);
+  color: var(--vp-button-brand-text);
   font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.lfd__btn:hover {
+  background: var(--vp-button-brand-hover-bg);
+  border-color: var(--vp-button-brand-hover-border);
+}
+.lfd__slider {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--vp-c-text-2);
 }
 .lfd__slider input[type='range'] {
-  width: 180px;
+  width: 160px;
+  accent-color: var(--vp-c-brand-1);
   vertical-align: middle;
 }
+.lfd__slider-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--vp-c-text-1);
+  min-width: 3em;
+}
 .lfd__stat {
+  margin-left: auto;
   color: var(--vp-c-text-2);
   font-variant-numeric: tabular-nums;
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.82rem;
 }
 </style>
