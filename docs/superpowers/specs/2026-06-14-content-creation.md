@@ -36,8 +36,9 @@
 
 ## 6. 演示（"▶ 动手"）的内容侧约定（对接架构 spec §4.2 / §6）
 - 每章"动手" = 一个 **vanilla JavaScript 演示**（零依赖、浏览器可单独运行），放进 `<Playground>` 挂入（架构 spec §4.3）。读者能**实时改代码、点运行看效果**。
-- 两种原型（架构 spec §6）按需选用：
-  - **Simulation**（无网络）：canvas 动画 / 曲线，演示原理 —— 原理章（Part A / B）用。
+- **canvas 可视化是这类教程的重头**：能用图说清的概念（参数怎么动、曲线怎么下掉、概率分布长什么样）就画出来——眼睛看到的比读文字强。原理章（Part A / B）的演示默认是 canvas 可视化，不是纯打印。
+- 两种原型（架构 spec §6）：
+  - **Simulation**（无网络）：canvas 动画 / 曲线 / 热力图，演示原理 —— 原理章的主形态。
   - **API-backed**（真实模型）：`fetch` 直连 provider，看真实 LLM 响应 —— 工程应用章（Part C）用。
 - 语言锁死 **JavaScript**（TS / Vue 都要编译或运行时，违背零依赖）。
 - 文本输出用 `console.log`（Playground 自动捕获）；图形画到 `canvas`；API 演示用注入的 `API_KEY`。
@@ -45,7 +46,7 @@
 
 ## 7. 已定 / 待办
 1. **章节目录**：统一用 `chapters/`（架构 spec §3 已同步）。
-2. **第 1 章演示**：当前 `chapters/ch01-learning.md` 的 vanilla JS 控制台脚本**符合**零依赖演示约定；后续接进 Playground 即可（可再加 canvas 可视化：线拟合 + 学习率滑块 + loss 曲线），不推翻。
+2. **第 1 章演示**：当前 `chapters/ch01-learning.md` 的 vanilla JS 控制台脚本**符合**零依赖约定，是过渡形态。**目标形态是 canvas 可视化**：数据点 + 拟合直线 + 学习率滑块 + loss 曲线，让读者亲眼看参数滑到最优。Playground 接入后升级。
 
 ## 8. 后续
 1. 作者审阅本内容 spec。

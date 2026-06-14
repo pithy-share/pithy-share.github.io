@@ -114,9 +114,9 @@ iframe srcdoc 模板（示意）：
 
 ---
 
-## 6. 演示的两种原型（patterns，非固定清单）
+## 6. 演示的两种原型
 
-- **Simulation（无网络）**：canvas 动画 / 曲线 / 热力图，演示原理（梯度下降、注意力、采样）。vanilla JS + canvas + `requestAnimationFrame`，离线可跑。
+- **Simulation（无网络）**：canvas 动画 / 曲线 / 热力图，演示原理（梯度下降、注意力、采样）。vanilla JS + canvas + `requestAnimationFrame`，离线可跑。**这是原理章（Part A / B）演示的主形态——可视化是这类教程的重头，平台须把 canvas 支持做成一等公民。**
 - **API-backed（真实模型）**：`fetch` 直连 provider，用注入的 `API_KEY`，演示提示词 / 采样 / agent。须处理"无 key"分支（渲染 `<ApiKeyInput>`）。Anthropic 需 header `anthropic-dangerous-direct-browser-access: true`。
 
 两种都是 vanilla JS，区别只是用不用 `fetch`。
