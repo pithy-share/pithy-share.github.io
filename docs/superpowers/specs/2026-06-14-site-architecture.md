@@ -90,17 +90,15 @@ VitePress 原生支持 Markdown 内写 Vue。一章可挂多个演示。
 
 ## 6. 共享基础设施
 
-- **`useApiKey`**：localStorage 单例，键名 `ai-learn:api-key:<provider>`；暴露 `getKey/setKey/clearKey/hasKey`（响应式）；模块级 + `ref`，无需 pinia。
-- **`<ApiKeyInput>`**：粘 key 入口 + provider 选择 + 记住 / 清除；key 永不入 URL、永不 `console.log`、清除时移出内存。
+- **`useApiKey`**：key 存 localStorage，全站复用；就 get / set 两件事。
+- **`<ApiKeyInput>`**：一行提示 + 输入框，用户粘贴自己的 key。
 - **`<DemoFrame>`**：演示外框——标题 / 一句话说明 / reset / 错误提示位；让所有演示视觉一致。
 
 ---
 
-## 7. 数据流与安全边界（API 演示）
+## 7. 数据流（API 演示）
 
-读者粘 key → `useApiKey` 存 localStorage → 演示组件读 key → `fetch` 直连 provider → 渲染结果。**全程只在浏览器，没有后端。** GitHub Pages 静态站 + 浏览器直连 provider，零运维、零 key 托管。
-
-**安全边界（诚实表述）**：key 不经服务器、不写日志、无后端托管；演示是平台发布的受控代码（读者不编辑），不会主动外泄。但 key 在演示作用域内、整站是公开静态资源——信任模型是"读者用自己的 key、信任这份演示代码"。
+读者粘 key → `useApiKey` 存 localStorage → 演示组件读 key → `fetch` 直连 provider → 渲染结果。**全程只在浏览器，没有后端。** GitHub Pages 静态站 + 浏览器直连 provider，零运维。
 
 ---
 
@@ -135,7 +133,7 @@ npm run docs:preview  # 预览构建产物
 
 - `run` / `verify`：本地起站，确认骨架（首页 / 侧边栏 / 搜索 / 暗色 / 代码高亮）正常。
 - 用 **1 个 Simulation 样板 + 1 个 API 样板**验证两类原型与 §4 契约打通（样板仅为验证平台）。
-- `code-review` / `simplify` 审平台代码；`security-review` 审 API key 处理。
+- `code-review` / `simplify` 审平台代码。
 - 章节 / 演示的具体验收属内容阶段。
 
 ---
