@@ -102,7 +102,8 @@ function themeColors() {
     axis: get('--vp-c-border', '#b0b0b0'),
     point: get('--vp-c-text-2', '#888'),
     brand: get('--vp-c-brand-1', '#3aa070'),
-    muted: get('--vp-c-text-3', '#aaa')
+    muted: get('--vp-c-text-3', '#aaa'),
+    bg: get('--vp-c-bg', '#ffffff')
   }
 }
 
@@ -117,35 +118,48 @@ function drawScatter() {
   const pad = 34
   const px = (x: number) => pad + (x - X_MIN) / (X_MAX - X_MIN) * (W - 2 * pad)
   const py = (y: number) => H - pad - (y - Y_MIN) / (Y_MAX - Y_MIN) * (H - 2 * pad)
-  // 网格线（淡）
-  ctx.strokeStyle = col.grid
-  ctx.lineWidth = 1
-  ctx.globalAlpha = 0.6
-  for (let gx = -2; gx <= 2; gx++) {
-    if (gx === 0) continue
-    ctx.beginPath(); ctx.moveTo(px(gx), pad); ctx.lineTo(px(gx), H - pad); ctx.stroke()
+
+  // 背景
+  ctx.fillStyle = col.bg
+  ctx.fillRect(0, 0, W, H)
+
+  // 网格点（坐标纸风格）
+  ctx.fillStyle = col.grid
+  const gridSpacing = 20
+  for (let gx = pad; gx < W - pad; gx += gridSpacing) {
+    for (let gy = pad; gy < H - pad; gy += gridSpacing) {
+      ctx.beginPath()
+      ctx.arc(gx, gy, 0.8, 0, Math.PI * 2)
+      ctx.fill()
+    }
   }
-  for (let gy = 2; gy <= 8; gy += 2) {
-    ctx.beginPath(); ctx.moveTo(pad, py(gy)); ctx.lineTo(W - pad, py(gy)); ctx.stroke()
-  }
-  ctx.globalAlpha = 1
+
   // 坐标轴（0 线，较实）
   ctx.strokeStyle = col.axis
   ctx.lineWidth = 1.5
   ctx.beginPath(); ctx.moveTo(pad, py(0)); ctx.lineTo(W - pad, py(0)); ctx.stroke()
   ctx.beginPath(); ctx.moveTo(px(0), pad); ctx.lineTo(px(0), H - pad); ctx.stroke()
+
   // 数据点
   ctx.fillStyle = col.point
   for (let i = 0; i < N; i++) {
     ctx.beginPath(); ctx.arc(px(xs[i]), py(ys[i]), 3.5, 0, Math.PI * 2); ctx.fill()
   }
-  // 拟合直线
+
+  // 拟合直线（带动画效果）
   ctx.strokeStyle = col.brand
   ctx.lineWidth = 2.5
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
   ctx.beginPath()
   ctx.moveTo(px(X_MIN), py(w.value * X_MIN + b.value))
   ctx.lineTo(px(X_MAX), py(w.value * X_MAX + b.value))
   ctx.stroke()
+
+  // 端点高亮
+  ctx.fillStyle = col.brand
+  ctx.beginPath(); ctx.arc(px(X_MIN), py(w.value * X_MIN + b.value), 4, 0, Math.PI * 2); ctx.fill()
+  ctx.beginPath(); ctx.arc(px(X_MAX), py(w.value * X_MAX + b.value), 4, 0, Math.PI * 2); ctx.fill()
 }
 
 function drawLoss() {
@@ -158,6 +172,11 @@ function drawLoss() {
   ctx.clearRect(0, 0, W, H)
   const pad = 24
   const hist = lossHistory.value
+
+  // 背景
+  ctx.fillStyle = col.bg
+  ctx.fillRect(0, 0, W, H)
+
   if (hist.length < 2) {
     ctx.fillStyle = col.muted
     ctx.font = '13px system-ui, sans-serif'
@@ -167,16 +186,31 @@ function drawLoss() {
   const maxL = Math.max(...hist)
   const px = (i: number) => pad + (i / (hist.length - 1)) * (W - 2 * pad)
   const py = (l: number) => H - pad - (l / maxL) * (H - 2 * pad)
-  // 底线
-  ctx.strokeStyle = col.grid
-  ctx.lineWidth = 1
-  ctx.beginPath(); ctx.moveTo(pad, H - pad); ctx.lineTo(W - pad, H - pad); ctx.stroke()
-  // 损失曲线
+
+  // 区域填充
+  ctx.beginPath()
+  ctx.moveTo(px(0), py(hist[0]))
+  for (let i = 1; i < hist.length; i++) {
+    ctx.lineTo(px(i), py(hist[i]))
+  }
+  ctx.lineTo(px(hist.length - 1), H - pad)
+  ctx.lineTo(px(0), H - pad)
+  ctx.closePath()
+  ctx.fillStyle = col.brand + '18'
+  ctx.fill()
+
+  // 曲线
   ctx.strokeStyle = col.brand
   ctx.lineWidth = 2
+  ctx.lineCap = 'round'
   ctx.beginPath()
   hist.forEach((l, i) => (i ? ctx.lineTo(px(i), py(l)) : ctx.moveTo(px(i), py(l))))
   ctx.stroke()
+
+  // 当前点
+  const lastIdx = hist.length - 1
+  ctx.fillStyle = col.brand
+  ctx.beginPath(); ctx.arc(px(lastIdx), py(hist[lastIdx]), 4, 0, Math.PI * 2); ctx.fill()
 }
 
 function draw() {
@@ -202,26 +236,43 @@ onBeforeUnmount(() => {
   <div ref="root" class="lfd">
     <div class="lfd__row">
       <div class="lfd__panel">
-        <div class="lfd__label">数据点 + 拟合直线</div>
+        <div class="lfd__panel-header">
+          <span class="lfd__panel-tag">散点图</span>
+          <span class="lfd__panel-title">数据点 + 拟合直线</span>
+        </div>
         <canvas ref="scatter" class="lfd__canvas"></canvas>
       </div>
       <div class="lfd__panel lfd__panel--sm">
-        <div class="lfd__label">损失曲线</div>
+        <div class="lfd__panel-header">
+          <span class="lfd__panel-tag">曲线</span>
+          <span class="lfd__panel-title">损失曲线</span>
+        </div>
         <canvas ref="lossCv" class="lfd__canvas lfd__canvas--sm"></canvas>
       </div>
     </div>
     <div class="lfd__ctrl">
       <button class="lfd__btn" type="button" @click="toggleRun">
-        {{ running ? '暂停' : (stepCount > 0 ? '继续' : '运行') }}
+        {{ running ? '⏸ 暂停' : (stepCount > 0 ? '▶ 继续' : '▶ 运行') }}
       </button>
       <label class="lfd__slider">
         <span class="lfd__slider-label">学习率</span>
         <input type="range" min="0.001" max="0.2" step="0.001" v-model.number="lr" />
         <span class="lfd__slider-value">{{ lr.toFixed(3) }}</span>
       </label>
-      <span class="lfd__stat">
-        w = {{ w.toFixed(3) }} · b = {{ b.toFixed(3) }} · loss = {{ currentLoss.toFixed(4) }}
-      </span>
+      <div class="lfd__stats">
+        <div class="lfd__stat">
+          <span class="lfd__stat-label">w</span>
+          <span class="lfd__stat-value">{{ w.toFixed(3) }}</span>
+        </div>
+        <div class="lfd__stat">
+          <span class="lfd__stat-label">b</span>
+          <span class="lfd__stat-value">{{ b.toFixed(3) }}</span>
+        </div>
+        <div class="lfd__stat">
+          <span class="lfd__stat-label">loss</span>
+          <span class="lfd__stat-value">{{ currentLoss.toFixed(4) }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -234,22 +285,37 @@ onBeforeUnmount(() => {
 }
 .lfd__panel {
   flex: 1 1 300px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--vp-c-bg);
 }
-.lfd__label {
+.lfd__panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+}
+.lfd__panel-tag {
+  font-family: var(--vp-font-family-mono);
   font-size: var(--fs-label);
+  color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.lfd__panel-title {
+  font-size: var(--fs-meta);
   font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--vp-c-text-3);
-  margin-bottom: 6px;
+  color: var(--vp-c-text-1);
 }
 .lfd__canvas {
   width: 100%;
   height: 290px;
   display: block;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 8px;
-  background: var(--vp-c-bg);
 }
 .lfd__canvas--sm {
   height: 170px;
@@ -260,12 +326,14 @@ onBeforeUnmount(() => {
   gap: 18px;
   flex-wrap: wrap;
   margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--vp-c-divider);
+  padding: 14px 18px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
   font-size: var(--fs-meta);
 }
 .lfd__btn {
-  padding: 5px 18px;
+  padding: 6px 20px;
   border: 1px solid var(--vp-button-brand-border);
   border-radius: 20px;
   background: var(--vp-button-brand-bg);
@@ -273,17 +341,29 @@ onBeforeUnmount(() => {
   font-size: var(--fs-label);
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s;
+  transition: background-color 0.15s, border-color 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 .lfd__btn:hover {
   background: var(--vp-button-brand-hover-bg);
   border-color: var(--vp-button-brand-hover-border);
+  transform: translateY(-1px);
+}
+.lfd__btn:active {
+  transform: translateY(0);
 }
 .lfd__slider {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   color: var(--vp-c-text-2);
+}
+.lfd__slider-label {
+  font-family: var(--vp-font-family-mono);
+  font-size: var(--fs-label);
+  color: var(--vp-c-text-3);
 }
 .lfd__slider input[type='range'] {
   width: 160px;
@@ -294,12 +374,43 @@ onBeforeUnmount(() => {
   font-variant-numeric: tabular-nums;
   color: var(--vp-c-text-1);
   min-width: 3em;
-}
-.lfd__stat {
-  margin-left: auto;
-  color: var(--vp-c-text-2);
-  font-variant-numeric: tabular-nums;
   font-family: var(--vp-font-family-mono);
   font-size: var(--fs-label);
+  background: var(--vp-c-bg);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--vp-c-divider);
+}
+.lfd__stats {
+  display: flex;
+  gap: 12px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.lfd__stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+}
+.lfd__stat-label {
+  font-family: var(--vp-font-family-mono);
+  font-size: var(--fs-label);
+  color: var(--vp-c-text-3);
+  font-weight: 500;
+}
+.lfd__stat-value {
+  font-family: var(--vp-font-family-mono);
+  font-size: var(--fs-label);
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 600px) {
+  .lfd__stats { margin-left: 0; width: 100%; }
+  .lfd__ctrl { gap: 12px; }
 }
 </style>
